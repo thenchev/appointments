@@ -11,4 +11,4 @@ I want to:
 **Acceptance criteria**:
 
     - All listed endpoints are callable
-    - Tests present and pasing
+    - Tests are present and pasing

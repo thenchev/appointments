@@ -19,4 +19,4 @@ I want to:
     - Database migrations are present
     - README.md (development guide) is updated
     - Calls to /appointment are properly handled
-    - Tests present and pasing
+    - Tests are present and pasing

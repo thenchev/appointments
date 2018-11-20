@@ -8,4 +8,4 @@ I want to:
 
     - Endpoint is callable and returns file
     - CSV file contains apointments and participants
-    - Tests present and pasing
+    - Tests are present and pasing
