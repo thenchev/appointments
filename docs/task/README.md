@@ -11,4 +11,3 @@ There is no order specified for solving tasks. Read them and decide where to sta
 **General requirements**:
 
  - PHP 7.1 and above
- - API is in JSON Format
