@@ -1,0 +1,64 @@
+swagger: "2.0"
+info:
+  description: "Appointment API is going to be used as backend service for scheduling appointments in our calendar."
+  version: "1.0.0"
+  title: "Appointment API"
+host: "localhost"
+basePath: "/"
+tags:
+- name: "appointment"
+  description: "Appointment storage"
+schemes:
+- "https"
+- "http"
+paths:
+  /appointment:
+    get:
+      tags:
+      - "appointment"
+      summary: "Finds all appointments"
+      description: "Multiple status values can be provided with comma separated strings"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Appointment"
+        400:
+          description: "Invalid call"
+definitions:
+  Appointment:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      title:
+        type: "string"
+      createdAt:
+        type: "string"
+        format: "date-time"
+      startsAt:
+        type: "string"
+        format: "date-time"
+      endsAt:
+        type: "string"
+        format: "date-time"
+      owner:
+        type: "string"
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
