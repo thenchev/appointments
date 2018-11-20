@@ -34,13 +34,13 @@ php ./bin/console server:start
 
 ```bash
 # generate blank migration for manual adjustment
-./bin/console doctrine:migrations:generate
+php ./bin/console doctrine:migrations:generate
 
 # generate migration based on difference between database structure and entities
-./bin/console doctrine:migrations:diff
+php ./bin/console doctrine:migrations:diff
 
 # migrate to latest versions
-./bin/console doctrine:migrations:migrate
+php ./bin/console doctrine:migrations:migrate
 ```
 
 ### Tests
