@@ -12,16 +12,16 @@ Appointment API is going to be used as backend service for scheduling appointmen
 composer install
 ```
 
-### Running locally
-```
-php ./bin/console server:start
-```
-
 #### Creating database
 ```
 php ./bin/console doctrine:database:create --env=dev   # Create database
 php ./bin/console doctrine:schema:create --env=dev     # Create schema
 php ./bin/console doctrine:fixtures:load --env=dev     # Load fixtures
+```
+
+### Running locally
+```
+php ./bin/console server:start
 ```
 
 ### Configuration
@@ -61,7 +61,7 @@ php ./bin/phpunit
 We stick to [PSR-2](https://www.php-fig.org/psr/psr-2/) and use [EditorConfig](https://editorconfig.org/) for improved consistency and readability.
 
 ```bash
-php ./vendor/bin/phpcs --standard=./phpcs.xml.dist
-php ./vendor/bin/phpmd --exclude src/Kernel.php src,tests text phpmd.xml.dist
+./vendor/bin/phpcs --standard=./phpcs.xml.dist
+./vendor/bin/phpmd --exclude src/Kernel.php src,tests text phpmd.xml.dist
 ```
 ```

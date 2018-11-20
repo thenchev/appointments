@@ -17,6 +17,6 @@ I want to:
 
     - Relations are properly set in doctrine
     - Database migrations are present
+    - README.md (development guide) is updated
     - Calls to /appointment are properly handled
-    - Functional tests are present and pasing
-    - Unit tests are present and pasing
+    - Tests present and pasing
