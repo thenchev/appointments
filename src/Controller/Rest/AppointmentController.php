@@ -111,9 +111,7 @@ class AppointmentController extends AbstractFOSRestController
      */
     public function putResource(int $id, Request $request): View
     {
-        $persistentResource = $this->repository->find($id);
-
-        if (!$persistentResource) {
+        if (!$persistentResource = $this->repository->find($id)) {
             return View::create([], Response::HTTP_NOT_FOUND);
         }
 
