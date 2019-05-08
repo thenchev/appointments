@@ -97,7 +97,7 @@ class AppointmentController extends AbstractFOSRestController
         $this->entityManager->persist($appointment);
         $this->entityManager->flush();
 
-        return View::create([], Response::HTTP_CREATED);
+        return View::create([ 'id' => $appointment->getId()], Response::HTTP_CREATED);
     }
 
     /**
