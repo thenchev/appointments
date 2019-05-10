@@ -3,13 +3,12 @@
 namespace App\Controller\Rest;
 
 use App\Entity\Appointment;
-
-use App\Repository\AppointmentRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Service\AppointmentService;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Exception\NotEncodableValueException;
 use Symfony\Component\Serializer\SerializerInterface;
 use FOS\RestBundle\Controller\Annotations as Rest;
 
@@ -21,33 +20,25 @@ class AppointmentController extends AbstractFOSRestController
     private $serializer;
 
     /**
-     * @var AppointmentRepository
-     */
-    private $repository;
-
-    /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
      * @var string
      */
     private $entityClass = Appointment::class;
 
     /**
+     * @var AppointmentService
+     */
+    private $appointmentService;
+
+    /**
      * AppointmentController constructor.
      *
      * @param SerializerInterface $serializer
-     * @param AppointmentRepository $appointmentRepository
-     * @param EntityManagerInterface $entityManager
+     * @param AppointmentService $appointmentService
      */
-    public function __construct(SerializerInterface $serializer, AppointmentRepository $appointmentRepository, EntityManagerInterface $entityManager)
+    public function __construct(SerializerInterface $serializer, AppointmentService $appointmentService)
     {
         $this->serializer = $serializer;
-        // TODO add an interface to the AppointmentRepository so we can change in on runtime (maybe overkill?).
-        $this->repository = $appointmentRepository;
-        $this->entityManager = $entityManager;
+        $this->appointmentService = $appointmentService;
     }
 
     /**
@@ -57,7 +48,7 @@ class AppointmentController extends AbstractFOSRestController
      */
     public function getAll()
     {
-        $resources = $this->repository->findAll();
+        $resources = $this->appointmentService->getAll();
 
         return View::create($resources);
     }
@@ -73,7 +64,7 @@ class AppointmentController extends AbstractFOSRestController
      */
     public function getById(int $id): View
     {
-        $resource = $this->repository->find($id);
+        $resource = $this->appointmentService->getById($id);
 
         if (!$resource) {
             return View::create([], Response::HTTP_NOT_FOUND);
@@ -94,10 +85,11 @@ class AppointmentController extends AbstractFOSRestController
     public function postResource(Request $request): View
     {
         $appointment = $this->serializer->deserialize($request->getContent(), $this->entityClass, 'json');
-        $this->entityManager->persist($appointment);
-        $this->entityManager->flush();
+        if (!$id = $this->appointmentService->postResource($appointment)) {
+            return View::create([], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
-        return View::create([ 'id' => $appointment->getId()], Response::HTTP_CREATED);
+        return View::create([ 'id' => $id], Response::HTTP_CREATED);
     }
 
     /**
@@ -111,17 +103,13 @@ class AppointmentController extends AbstractFOSRestController
      */
     public function putResource(int $id, Request $request): View
     {
-        if (!$persistentResource = $this->repository->find($id)) {
+        try {
+            $appointment = $this->serializer->deserialize($request->getContent(), $this->entityClass, 'json');
+            $this->appointmentService->putResource($id, $appointment);
+        } catch (NotEncodableValueException $e) {
+            return View::create([], Response::HTTP_BAD_REQUEST);
+        } catch (\Exception $e) {
             return View::create([], Response::HTTP_NOT_FOUND);
-        }
-
-        $resource = $this->serializer->deserialize($request->getContent(), $this->entityClass, 'json');
-        if ($resource) {
-            $persistentResource->setTitle($resource->getTitle());
-            $persistentResource->setStartsAt($resource->getStartsAt());
-            $persistentResource->setEndsAt($resource->getEndsAt());
-            $this->entityManager->persist($persistentResource);
-            $this->entityManager->flush();
         }
 
         return View::create([], Response::HTTP_OK);
@@ -138,15 +126,12 @@ class AppointmentController extends AbstractFOSRestController
      */
     public function deleteResource(int $id): View
     {
-        $resource = $this->repository->find($id);
-        if (!$resource) {
+        try {
+            $this->appointmentService->deleteResource($id);
+        } catch (\Exception $e) {
             return View::create([], Response::HTTP_NOT_FOUND);
         }
 
-        $this->entityManager->remove($resource);
-        $this->entityManager->flush();
-
         return View::create([], Response::HTTP_NO_CONTENT);
     }
-
 }

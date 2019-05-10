@@ -3,4 +3,4 @@ fos_rest:
     view_response_listener:  true
   format_listener:
     rules:
-      - { path: ^/api/v1, prefer_extension: true, fallback_format: json, priorities: [ json ] }
+      - { prefer_extension: true, fallback_format: json, priorities: [ json ] }

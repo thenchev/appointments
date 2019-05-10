@@ -37,15 +37,19 @@ class AppointmentControllerTest extends WebTestCase
         $this->assertJsonStringEqualsJsonString("[]", $this->client->getResponse()->getContent(), 'api/v1/appointment is showing an empty response');
 
         $this->client->request('GET', '/api/v1/appointment/1');
-        // Test that we return 404 when there is no content in the database.
         $this->assertJsonResponse($this->client->getResponse(), 404);
 
-        $this->client->request('PUT', '/api/v1/appointment/1');
-        // Test that we return 404 when there is no content in the database.
+        $this->client->request(
+            'PUT',
+            '/api/v1/appointment/1',
+            [],
+            [],
+            ['CONTENT_TYPE' => 'application/json'],
+            '{"title":"Different test title","createdAt":"2019-05-07T15:49:39-06:00", "startsAt":"2019-05-06T18:00:00-06:00","endsAt":"2019-05-08T15:00:00-06:00"}'
+        );
         $this->assertJsonResponse($this->client->getResponse(), 404);
 
         $this->client->request('DELETE', '/api/v1/appointment/1');
-        // Test that we return 404 when there is no content in the database.
         $this->assertJsonResponse($this->client->getResponse(), 404);
 
         $this->client->request(
